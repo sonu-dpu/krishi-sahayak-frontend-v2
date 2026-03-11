@@ -1,7 +1,11 @@
 import { Outlet, createFileRoute, useParams } from "@tanstack/react-router";
 import { ChatSidebar } from "@/components/chat-sidebar";
 import { ChatProvider, useSharedChat } from "@/hooks/useSharedChat";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import {
   PromptInput,
   PromptInputTextarea,
@@ -27,19 +31,21 @@ function ChatLayout() {
 }
 
 function ChatLayoutInner() {
-  const { 
-    allSessions, 
+  const {
+    allSessions,
     isLoadingConversations,
     input,
     setInput,
     isLoading,
-    handleSubmit
+    handleSubmit,
   } = useSharedChat();
-  
+
   const params = useParams({ strict: false });
   const currentChatId = params.chatId || null;
 
-  const currentChatTitle = allSessions.find(s => s.id === currentChatId)?.title || (currentChatId ? "Conversation" : "New Chat");
+  const currentChatTitle =
+    allSessions.find((s) => s.id === currentChatId)?.title ||
+    (currentChatId ? "Conversation" : "New Chat");
 
   return (
     <SidebarProvider>
@@ -48,7 +54,7 @@ function ChatLayoutInner() {
         currentChatId={currentChatId}
         isLoading={isLoadingConversations}
       />
-      <SidebarInset className="flex flex-col h-screen overflow-hidden bg-background">
+      <SidebarInset className="flex flex-col h-dvh  bg-background">
         {/* Fixed Header */}
         <header className="border-b bg-background px-4 py-3 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2 overflow-hidden">
@@ -57,7 +63,10 @@ function ChatLayoutInner() {
               {currentChatTitle}
             </h1>
           </div>
-          <div id="chat-header-actions" className="flex items-center shrink-0" />
+          <div
+            id="chat-header-actions"
+            className="flex items-center shrink-0"
+          />
         </header>
 
         {/* Unified Scrollable Area */}
@@ -69,7 +78,7 @@ function ChatLayoutInner() {
         </Conversation>
 
         {/* Shared Fixed Input area */}
-        <div className="border-t p-4 shrink-0 bg-background">
+        <div className="border-t p-4 bg-background">
           <PromptInput onSubmit={handleSubmit}>
             <PromptInputTextarea
               value={input}

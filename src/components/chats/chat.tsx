@@ -46,7 +46,12 @@ export function Chat() {
     // 1. We've actually started a conversation in THIS session
     // 2. We have a valid backend ID (24+ chars)
     // 3. We're not currently loading/sending
-    if (hasStarted && !isLoading && currentChatId && currentChatId.length >= 24) {
+    if (
+      hasStarted &&
+      !isLoading &&
+      currentChatId &&
+      currentChatId.length >= 24
+    ) {
       navigate({ to: "/c/$chatId", params: { chatId: currentChatId } });
     }
   }, [hasStarted, isLoading, currentChatId, navigate]);
@@ -82,9 +87,7 @@ export function Chat() {
               <MessageContent>
                 {message.role === "assistant" ? (
                   message.content.startsWith("shimmer:") ? (
-                    <Shimmer>
-                      {message.content.replace("shimmer:", "")}
-                    </Shimmer>
+                    <Shimmer>{message.content.replace("shimmer:", "")}</Shimmer>
                   ) : (
                     <MessageResponse>{message.content}</MessageResponse>
                   )
