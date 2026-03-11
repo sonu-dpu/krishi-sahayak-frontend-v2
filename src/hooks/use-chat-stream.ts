@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
+import { API_BASE_URL } from "@/lib/apiClient";
 
 export interface Message {
   id: string;
@@ -91,7 +92,11 @@ export function useChatStream(): UseChatStreamReturn {
           title: "Conversation",
           messages: [
             userMessage,
-            { id: assistantId, role: "assistant" as const, content: "shimmer:Sending..." },
+            {
+              id: assistantId,
+              role: "assistant" as const,
+              content: "shimmer:Sending...",
+            },
           ],
         };
         return [newChat, ...prev];
@@ -102,7 +107,11 @@ export function useChatStream(): UseChatStreamReturn {
         messages: [
           ...prev[chatIndex].messages,
           userMessage,
-          { id: assistantId, role: "assistant" as const, content: "shimmer:Sending..." },
+          {
+            id: assistantId,
+            role: "assistant" as const,
+            content: "shimmer:Sending...",
+          },
         ],
       };
 
@@ -125,8 +134,8 @@ export function useChatStream(): UseChatStreamReturn {
       const isNewConversation = tempChatId.length < 24;
 
       const url = isNewConversation
-        ? "http://localhost:3000/api/v1/conversations/start"
-        : `http://localhost:3000/api/v1/conversations/${tempChatId}`;
+        ? `${API_BASE_URL}/api/v1/conversations/start`
+        : `${API_BASE_URL}/api/v1/conversations/${tempChatId}`;
       const token = await getToken({ skipCache: true });
       const response = await fetch(url, {
         method: "POST",

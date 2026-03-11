@@ -15,22 +15,27 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const chatStream = useChatStream();
   const { data: conversationsResponse, isLoading } = useConversations();
 
-  const backendSessions = conversationsResponse?.conversations?.docs?.map(doc => ({
-    id: doc._id,
-    title: doc.title,
-  })) || [];
+  const backendSessions =
+    conversationsResponse?.conversations?.docs?.map((doc) => ({
+      id: doc._id,
+      title: doc.title,
+    })) || [];
 
-  const localSessions = chatStream.chatSessions.filter(local => 
-    !backendSessions.some(backend => backend.id === local.id)
-  ).map(local => ({
-    id: local.id,
-    title: local.title,
-  }));
+  const localSessions = chatStream.chatSessions
+    .filter(
+      (local) => !backendSessions.some((backend) => backend.id === local.id),
+    )
+    .map((local) => ({
+      id: local.id,
+      title: local.title,
+    }));
 
   const allSessions = [...localSessions, ...backendSessions];
 
   return (
-    <ChatContext.Provider value={{ ...chatStream, allSessions, isLoadingConversations: isLoading }}>
+    <ChatContext.Provider
+      value={{ ...chatStream, allSessions, isLoadingConversations: isLoading }}
+    >
       {children}
     </ChatContext.Provider>
   );
