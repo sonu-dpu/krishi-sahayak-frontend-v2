@@ -52,7 +52,11 @@ export function Chat() {
       currentChatId &&
       currentChatId.length >= 24
     ) {
-      navigate({ to: "/c/$chatId", params: { chatId: currentChatId } });
+      navigate({
+        to: "/c/$chatId",
+        params: { chatId: currentChatId },
+        replace: true,
+      });
     }
   }, [hasStarted, isLoading, currentChatId, navigate]);
 

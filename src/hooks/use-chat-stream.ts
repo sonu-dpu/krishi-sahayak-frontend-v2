@@ -49,9 +49,7 @@ export function useChatStream(): UseChatStreamReturn {
         chat.id === chatId
           ? {
               ...chat,
-              title:
-                firstMessage.slice(0, 30) +
-                (firstMessage.length > 30 ? "..." : ""),
+              title: firstMessage,
             }
           : chat,
       ),
