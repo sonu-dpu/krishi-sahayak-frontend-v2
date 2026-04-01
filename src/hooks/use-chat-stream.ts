@@ -23,7 +23,7 @@ interface UseChatStreamReturn {
   setCurrentChatId: (id: string | null) => void;
   setChatSessions: React.Dispatch<React.SetStateAction<ChatSession[]>>;
   createNewChat: () => void;
-  handleSubmit: (message: { text: string }) => Promise<void>;
+  handleSubmit: (message: { text: string; files: any[] }) => Promise<void>;
 }
 
 export function useChatStream(): UseChatStreamReturn {
@@ -56,7 +56,7 @@ export function useChatStream(): UseChatStreamReturn {
     );
   };
 
-  const handleSubmit = async (message: { text: string }) => {
+  const handleSubmit = async (message: { text: string; files: any[] }) => {
     if (!message.text.trim() || isLoading) return;
 
     let tempChatId = currentChatId;
