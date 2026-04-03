@@ -25,25 +25,30 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
 });
 
-const PUBLIC_ROUTES = ["/signin", "/signup", ""];
+const PUBLIC_ROUTES = ["/signin", "/signup", "/"];
 const COMMON_RESTRICTED_ROUTES = ["/signin", "/signup", ""];
 
-const isFarmerRoute = (path: string) => path.startsWith("/chat") || path.startsWith("/c/") || path.startsWith("/app");
+const isFarmerRoute = (path: string) =>
+  path.startsWith("/chat") || path.startsWith("/c/") || path.startsWith("/app");
 const isOfficerRoute = (path: string) => path.startsWith("/dashboard");
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { getToken, isLoaded: isClerkLoaded, isSignedIn } = useAuth();
   const navigate = useNavigate();
 
-  const { data: user = null, isLoading: isQueryLoading, error } = useQuery({
+  const {
+    data: user = null,
+    isLoading: isQueryLoading,
+    error,
+  } = useQuery({
     queryKey: ["user", isSignedIn],
     queryFn: async () => {
       if (!isSignedIn) return null;
       const token = await getToken();
       if (!token) return null;
 
-      const response = await apiClient.get('/api/v1/users/me', {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await apiClient.get("/api/v1/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data.data as UserData;
     },
@@ -54,7 +59,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return false; // Do not retry if onboarding profile is missing
       }
       return failureCount < 3;
-    }
+    },
   });
 
   const isLoading = !isClerkLoaded || isQueryLoading;
@@ -75,7 +80,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // 2. Signed in, but profile not found (404) - Onboarding not completed
     if (error && isAxiosError(error) && error.response?.status === 404) {
       if (currentPath !== "/onboard") {
-        navigate({ to: "/onboard", });
+        navigate({ to: "/onboard" });
       }
       return;
     }
@@ -83,11 +88,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // 3. Signed in and profile exists
     if (user) {
       if (user.role === "farmer") {
-        if (COMMON_RESTRICTED_ROUTES.includes(currentPath) || isOfficerRoute(currentPath)) {
+        if (
+          COMMON_RESTRICTED_ROUTES.includes(currentPath) ||
+          isOfficerRoute(currentPath)
+        ) {
           navigate({ to: "/app" });
         }
       } else if (user.role === "officer") {
-        if (COMMON_RESTRICTED_ROUTES.includes(currentPath) || isFarmerRoute(currentPath)) {
+        if (
+          COMMON_RESTRICTED_ROUTES.includes(currentPath) ||
+          isFarmerRoute(currentPath)
+        ) {
           navigate({ to: "/dashboard" } as any);
         }
       }
