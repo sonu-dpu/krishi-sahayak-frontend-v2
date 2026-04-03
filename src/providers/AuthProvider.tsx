@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [isClerkLoaded, isSignedIn, user, error, navigate]);
 
-  if (isLoading) {
+  if (isLoading && !PUBLIC_ROUTES.includes(window.location.pathname)) {
     return <div>Loading...</div>;
   }
   return (
