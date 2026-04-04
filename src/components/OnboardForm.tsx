@@ -81,7 +81,7 @@ export default function OnboardForm() {
       });
 
       navigate({ to: "/app" });
-    } catch (err: AxiosError | unknown) {
+    } catch (err: unknown) {
       setError("Failed to complete onboarding. Please try again.");
       console.log("err", err);
     } finally {
