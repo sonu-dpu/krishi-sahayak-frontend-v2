@@ -13,8 +13,9 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import {FarmerImageGrid} from "@/components/auth/FarmerImageGrid";
+import { FarmerImageGrid } from "@/components/auth/FarmerImageGrid";
 import { cn } from "@/lib/utils";
+import { apiClient } from "@/lib/apiClient";
 
 type Step = 1 | 2 | 3;
 
@@ -72,24 +73,21 @@ export default function OnboardForm() {
 
     try {
       const token = await getToken();
-      const res = await fetch("http://localhost:3000/api/v1/users/register", {
-        method: "POST",
+
+      await apiClient.post("/api/v1/users/register", form, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(form),
       });
 
-      if (!res.ok) throw new Error("Onboarding failed");
       navigate({ to: "/app" });
-    } catch (err) {
+    } catch (err: AxiosError | unknown) {
       setError("Failed to complete onboarding. Please try again.");
+      console.log("err", err);
     } finally {
       setLoading(false);
     }
   }
-
   return (
     <FarmerImageGrid>
       <div className="w-full max-w-xl mx-auto p-4 flex flex-col items-center">
@@ -202,7 +200,9 @@ export default function OnboardForm() {
                       placeholder="e.g. Rajesh Kumar"
                       className="h-14 pl-12 rounded-2xl border-2 border-slate-100 focus:border-emerald-500 bg-white transition-all text-slate-900"
                       value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, name: e.target.value })
+                      }
                     />
                   </div>
                 </div>
@@ -267,8 +267,8 @@ export default function OnboardForm() {
                   Finalizing Access
                 </h2>
                 <p className="text-slate-500 font-medium leading-relaxed tracking-tight">
-                  You are all set to join the premium agricultural network. Review
-                  your details and finish.
+                  You are all set to join the premium agricultural network.
+                  Review your details and finish.
                 </p>
               </div>
 
@@ -279,7 +279,9 @@ export default function OnboardForm() {
                 </div>
                 <div className="flex justify-between items-center text-slate-700 font-bold text-lg">
                   <span>Role</span>
-                  <span className="text-emerald-700 capitalize">{form.role}</span>
+                  <span className="text-emerald-700 capitalize">
+                    {form.role}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center text-slate-700 font-bold text-lg">
                   <span>Pinpoint Location</span>
