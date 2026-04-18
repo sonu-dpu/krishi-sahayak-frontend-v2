@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../lib/apiClient";
 import { isAxiosError } from "axios";
+import { Sprout } from "lucide-react";
 
 type UserData = {
   _id: string;
@@ -26,15 +27,21 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 const PUBLIC_ROUTES = ["/signin", "/signup", "/"];
-const COMMON_RESTRICTED_ROUTES = ["/signin", "/signup", ""];
+const AUTH_ONLY_RESTRICTED_ROUTES = ["/signin", "/signup", "/onboard", "/"];
 
 const isFarmerRoute = (path: string) =>
-  path.startsWith("/chat") || path.startsWith("/c/") || path.startsWith("/app");
-const isOfficerRoute = (path: string) => path.startsWith("/dashboard");
+  path.startsWith("/chat") ||
+  path.startsWith("/c/") ||
+  path.startsWith("/app") ||
+  path.startsWith("/chat-live");
+
+const isOfficerRoute = (path: string) =>
+  path.startsWith("/dashboard") || path.startsWith("/officer");
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { getToken, isLoaded: isClerkLoaded, isSignedIn } = useAuth();
   const navigate = useNavigate();
+  const { location } = useRouterState();
 
   const {
     data: user = null,
@@ -58,7 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (isAxiosError(err) && err.response?.status === 404) {
         return false; // Do not retry if onboarding profile is missing
       }
-      return failureCount < 3;
+      return failureCount < 2;
     },
   });
 
@@ -67,7 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!isClerkLoaded) return;
 
-    const currentPath = window.location.pathname;
+    const currentPath = location.pathname;
 
     // 1. Not signed in
     if (!isSignedIn) {
@@ -79,35 +86,70 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // 2. Signed in, but profile not found (404) - Onboarding not completed
     if (error && isAxiosError(error) && error.response?.status === 404) {
-      if (currentPath !== "/onboard") {
+      if (currentPath !== "/onboard" && !PUBLIC_ROUTES.includes(currentPath)) {
         navigate({ to: "/onboard" });
       }
       return;
     }
 
-    // 3. Signed in and profile exists
+    // 3. Loading user data - Wait for it before doing role-based checks
+    if (isQueryLoading) return;
+
+    // 4. Signed in and profile exists
     if (user) {
       if (user.role === "farmer") {
         if (
-          COMMON_RESTRICTED_ROUTES.includes(currentPath) ||
+          AUTH_ONLY_RESTRICTED_ROUTES.includes(currentPath) ||
           isOfficerRoute(currentPath)
         ) {
+          console.log(
+            `Restricting farmer from ${currentPath}, redirecting to /app`,
+          );
           navigate({ to: "/app" });
         }
       } else if (user.role === "officer") {
         if (
-          COMMON_RESTRICTED_ROUTES.includes(currentPath) ||
+          AUTH_ONLY_RESTRICTED_ROUTES.includes(currentPath) ||
           isFarmerRoute(currentPath)
         ) {
-          navigate({ to: "/dashboard" } as any);
+          console.log(
+            `Restricting officer from ${currentPath}, redirecting to /dashboard`,
+          );
+          navigate({ to: "/dashboard" });
         }
       }
-      console.log("User role:", user.role);
     }
-  }, [isClerkLoaded, isSignedIn, user, error, navigate]);
+  }, [
+    isClerkLoaded,
+    isSignedIn,
+    user,
+    error,
+    navigate,
+    location.pathname,
+    isQueryLoading,
+  ]);
 
   if (isLoading && !PUBLIC_ROUTES.includes(window.location.pathname)) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-6">
+          <div className="relative">
+            <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
+            <div className="relative bg-background p-5 rounded-full border-2 border-primary/10 shadow-2xl">
+              <Sprout className="size-12 text-primary animate-pulse" />
+            </div>
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <p className="text-2xl font-bold tracking-tight text-foreground">
+              Krishi Sahayak
+            </p>
+            <p className="text-sm font-medium text-muted-foreground animate-pulse">
+              Cultivating your experience...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
   return (
     <AuthContext.Provider value={{ user, isLoading }}>
