@@ -44,32 +44,44 @@ export function AppSidebar({ user, ...props }: React.ComponentProps<typeof Sideb
   }
 
   const isOfficer = user?.role === "officer"
-  
-  const navMain = [
-    {
-      title: "Home",
-      url: isOfficer ? "/dashboard" : "/app",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "AI Chat",
-      url: "/chat",
-      icon: MessageSquare,
-    },
-    {
-      title: "Live Support",
-      url: "/chat-live",
-      icon: Radio,
-    },
-    ...(!isOfficer ? [{
-      icon: Sprout,
-    }] : []),
-    ...(isOfficer ? [{
-      title: "Scheme Upload",
-      url: "#",
-      icon: FileUp,
-    }] : []),
-  ]
+
+  const navMain = isOfficer
+    ? [
+        {
+          title: "Dashboard",
+          url: "/dashboard",
+          icon: LayoutDashboard,
+        },
+        
+        
+        {
+          title: "Scheme Management",
+          url: "/dashboard",
+          icon: FileUp,
+        },
+      ]
+    : [
+        {
+          title: "Dashboard",
+          url: "/app",
+          icon: LayoutDashboard,
+        },
+        {
+          title: "AI Chat",
+          url: "/chat",
+          icon: MessageSquare,
+        },
+        {
+          title: "Live Support",
+          url: "/chat-live",
+          icon: Radio,
+        },
+        {
+          title: "My Queries",
+          url: "/app/queries",
+          icon: Sprout,
+        },
+      ]
 
 
   return (
