@@ -1,10 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/dashboard')({
-  component:  Dashboard,
-})
+export const Route = createFileRoute("/dashboard")({
+  component: Dashboard,
+});
 
-import { AppSidebar } from "@/components/app-sidebar"
+import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,15 +12,15 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { OfficerDashboardView } from "@/components/officer-dashboard/OfficerDashboardView"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/breadcrumb";
+import { OfficerDashboardView } from "@/components/officer-dashboard/OfficerDashboardView";
+import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { useAppAuth } from "@/providers/AuthProvider"
+} from "@/components/ui/sidebar";
+import { useAppAuth } from "@/providers/AuthProvider";
 
 export default function Dashboard() {
   const { user } = useAppAuth();
@@ -40,20 +40,26 @@ export default function Dashboard() {
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink href="#">
-                    {user?.role === 'officer' ? "Officer Dashboard" : "Build Your Application"}
+                    {user?.role === "officer"
+                      ? "Officer Dashboard"
+                      : "Build Your Application"}
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>{user?.role === 'officer' ? "Incoming Queries" : "Data Fetching"}</BreadcrumbPage>
+                  <BreadcrumbPage>
+                    {user?.role === "officer"
+                      ? "Incoming Queries"
+                      : "Data Fetching"}
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
 
-        {user?.role === 'officer' ? (
-           <OfficerDashboardView />
+        {user?.role === "officer" ? (
+          <OfficerDashboardView />
         ) : (
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0 mt-4">
             <div className="grid auto-rows-min gap-4 md:grid-cols-3">
@@ -66,6 +72,5 @@ export default function Dashboard() {
         )}
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }
-

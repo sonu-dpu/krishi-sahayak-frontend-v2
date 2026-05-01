@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
-
 export const Route = createFileRoute("/")({
   component: MainPage,
 });
@@ -68,7 +67,7 @@ function MainPage() {
               >
                 <Link to="/app">Dashboard</Link>
               </Button>
-              <UserButton afterSignOutUrl="/" />
+              <UserButton />
             </SignedIn>
           </div>
         </div>
@@ -193,7 +192,7 @@ function MainPage() {
           {/* Tier 1 */}
           <div className="bg-white p-12 rounded-[3rem] border border-slate-200 shadow-sm hover:shadow-2xl transition-all duration-500 group relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity" />
-            
+
             <div className="size-16 bg-emerald-600 rounded-2xl flex items-center justify-center text-white mb-10 shadow-lg shadow-emerald-100 group-hover:scale-110 transition-transform">
               <Zap className="w-8 h-8 fill-current" />
             </div>
@@ -319,11 +318,13 @@ function MainPage() {
 
           <div className="relative group">
             <div className="bg-slate-950 p-10 rounded-[4rem] shadow-3xl border border-white/10 relative z-10 overflow-hidden">
-               <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-transparent opacity-50" />
-               <div className="space-y-8 relative z-10">
+              <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-transparent opacity-50" />
+              <div className="space-y-8 relative z-10">
                 <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10 backdrop-blur-md">
                   <Search className="text-emerald-400 size-5" />
-                  <span className="text-emerald-50/40 text-sm font-light">Treatment for wheat rust...</span>
+                  <span className="text-emerald-50/40 text-sm font-light">
+                    Treatment for wheat rust...
+                  </span>
                 </div>
                 <div className="flex gap-5">
                   <div className="size-10 bg-emerald-600 rounded-full shrink-0 shadow-lg shadow-emerald-500/30" />
@@ -335,7 +336,9 @@ function MainPage() {
                 </div>
                 <div className="p-8 bg-emerald-600/10 border border-emerald-500/20 rounded-3xl backdrop-blur-2xl">
                   <p className="text-emerald-50/90 text-[15px] font-light leading-relaxed italic">
-                    "Based on the Aronomy Technical Bulletin #24, Neem-based surfactants are recommended for fungal rust in tropical zones..."
+                    "Based on the Aronomy Technical Bulletin #24, Neem-based
+                    surfactants are recommended for fungal rust in tropical
+                    zones..."
                   </p>
                 </div>
               </div>
@@ -352,15 +355,16 @@ function MainPage() {
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-emerald-700" />
           <div className="absolute inset-0 bg-gradient-to-tr from-emerald-900 via-emerald-700 to-emerald-500 opacity-90" />
-          
+
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
-          
+
           <div className="relative z-10 space-y-10">
             <h2 className="text-4xl md:text-6xl font-bold leading-[1.15] max-w-4xl mx-auto">
               Ready to cultivate more intelligent harvests?
             </h2>
             <p className="text-emerald-50/80 text-xl font-normal max-w-2xl mx-auto leading-relaxed">
-              Join thousands of modern farmers using AI to protect and optimize their crops. Instant, research-backed, and human-verified.
+              Join thousands of modern farmers using AI to protect and optimize
+              their crops. Instant, research-backed, and human-verified.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-6">
               <Button
@@ -411,7 +415,10 @@ function MainPage() {
             <ul className="space-y-5 font-normal text-slate-400">
               {["About Us", "Our Science", "Research"].map((item) => (
                 <li key={item}>
-                  <a href="#" className="hover:text-emerald-600 transition-colors">
+                  <a
+                    href="#"
+                    className="hover:text-emerald-600 transition-colors"
+                  >
                     {item}
                   </a>
                 </li>
@@ -423,13 +430,18 @@ function MainPage() {
               Legal
             </h5>
             <ul className="space-y-5 font-normal text-slate-400">
-              {["Privacy Policy", "Terms of Use", "Data Security"].map((item) => (
-                <li key={item}>
-                  <a href="#" className="hover:text-emerald-600 transition-colors">
-                    {item}
-                  </a>
-                </li>
-              ))}
+              {["Privacy Policy", "Terms of Use", "Data Security"].map(
+                (item) => (
+                  <li key={item}>
+                    <a
+                      href="#"
+                      className="hover:text-emerald-600 transition-colors"
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ),
+              )}
             </ul>
           </div>
         </div>
